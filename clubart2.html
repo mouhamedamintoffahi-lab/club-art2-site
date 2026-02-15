@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Art Club Pro - 30 Day Mastery</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #0b1220; --card: rgba(255, 255, 255, 0.05);
+            --text: #eaf0ff; --muted: rgba(234, 240, 255, 0.6);
+            --border: rgba(255, 255, 255, 0.1);
+            --accent: #7c5cff; --accent2: #2ee59d;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Poppins", sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+        .container { width: min(1200px, 92%); margin: 0 auto; }
+        
+        header { padding: 20px 0; border-bottom: 1px solid var(--border); backdrop-filter: blur(15px); position: sticky; top: 0; z-index: 1000; background: rgba(11, 18, 32, 0.8); }
+        .nav { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.5rem; font-weight: 700; color: var(--text); text-decoration: none; }
+
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; margin-top: 50px; }
+        .card { background: var(--card); border: 1px solid var(--border); border-radius: 28px; overflow: hidden; transition: 0.4s; position: relative; }
+        .card:hover { transform: translateY(-10px); border-color: var(--accent2); }
+        .card-img { width: 100%; height: 220px; object-fit: cover; }
+        .card-body { padding: 25px; }
+
+        #details-page { display: none; padding: 60px 0; animation: fadeIn 0.5s ease; }
+        .info-grid { display: grid; grid-template-columns: 1fr 1.5fr; gap: 40px; }
+        
+        .section-box { background: rgba(255,255,255,0.03); padding: 25px; border-radius: 24px; border: 1px solid var(--border); margin-bottom: 25px; }
+        .day-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; margin-top: 15px; }
+        .day-box { background: rgba(124, 92, 255, 0.1); padding: 10px; border-radius: 12px; text-align: center; font-size: 0.8rem; border: 1px solid var(--accent); }
+        
+        .gear-item { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; padding: 10px; background: rgba(255,255,255,0.02); border-radius: 10px; }
+        .gear-item i { color: var(--accent2); }
+
+        .btn { cursor: pointer; padding: 14px 28px; border-radius: 16px; border: none; font-weight: 600; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
+        .btn-primary { background: var(--accent); color: white; width: 100%; justify-content: center; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @media (max-width: 900px) { .info-grid { grid-template-columns: 1fr; } }
+        .ai-box {
+    background: linear-gradient(135deg, rgba(124, 92, 255, 0.15) 0%, rgba(46, 229, 157, 0.05) 100%);
+    border: 1px solid var(--border);
+    padding: 50px 20px;
+    border-radius: 35px;
+    margin: 40px 0;
+    text-align: center;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+}
+
+.ai-icon { font-size: 3rem; color: var(--accent); margin-bottom: 15px; }
+
+.input-wrapper {
+    display: flex;
+    max-width: 600px;
+    margin: 0 auto;
+    gap: 10px;
+}
+
+.ai-input {
+    flex: 1;
+    padding: 18px 25px;
+    border-radius: 18px;
+    border: 1px solid var(--border);
+    background: rgba(0, 0, 0, 0.3);
+    color: white;
+    font-size: 1rem;
+    outline: none;
+    transition: 0.3s;
+}
+
+.ai-input:focus { border-color: var(--accent); box-shadow: 0 0 15px rgba(124, 92, 255, 0.3); }
+
+.btn-ai-go {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 0 30px;
+    border-radius: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-ai-go:hover { background: var(--accent2); color: #0b1220; transform: scale(1.05); }
+
+.ai-status { margin-top: 20px; font-weight: 600; color: var(--accent2); min-height: 24px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="container nav">
+        <a href="#" class="logo" onclick="showHome()"><i class="fa-solid fa-rocket"></i> Art Academy Pro</a>
+    </div>
+</header>
+
+<main class="container" id="home-view">
+    <div class="cards-grid" id="mainGrid"></div>
+    <section class="ai-box" id="ai-assistant">
+    <div class="ai-content">
+        <i class="fa-solid fa-robot-astronomer ai-icon"></i>
+        <h2>✨ Art Advisor AI</h2>
+        <p style="color: var(--muted); margin-bottom: 20px;">Ektébli chnowa t7eb titsalla7 (ex: "n7eb nmathel", "n7eb na3mal beat music") wa taw na3tik el path el s7i7.</p>
+        
+        <div class="input-wrapper">
+            <input type="text" id="aiQuery" class="ai-input" placeholder="Type your passion here...">
+            <button class="btn-ai-go" onclick="askAI()">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Analyze
+            </button>
+        </div>
+        
+        <p id="aiResponse" class="ai-status"></p>
+    </div>
+</section>
+   
+</main> 
+
+<section id="details-page">
+    <div class="container">
+        <button class="btn" onclick="showHome()" style="background: rgba(255,255,255,0.1); color: white; margin-bottom: 30px;">← Return to Explorer</button>
+        <div id="details-content"></div>
+    </div>
+</section>
+
+<script>
+    const branches = {
+        "Video Editing": {
+            img: "https://images.pexels.com/photos/257904/pexels-photo-257904.jpeg?auto=compress&cs=tinysrgb&w=800",
+            icon: "fa-video",
+            desc: "The 30-Day Hollywood Editor Challenge.",
+            gear: ["Powerful PC (16GB RAM+)", "Secondary Monitor", "Studio Headphones", "High-speed SSD"],
+            plan: {
+                phase1: "Day 1-10: Software Mastery, Cuts, & Organization.",
+                phase2: "Day 11-20: Advanced Color Grading & Sound Design.",
+                phase3: "Day 21-30: VFX, Transitions, & 3 Cinematic Projects."
+            }
+        },
+        "Graphic Design": {
+            img: "https://images.pexels.com/photos/313690/pexels-photo-313690.jpeg?auto=compress&cs=tinysrgb&w=800",
+            icon: "fa-bezier-curve",
+            desc: "30 Days to become a Brand Designer.",
+            gear: ["Drawing Tablet (Wacom/Huion)", "Adobe Creative Cloud", "Color Calibrated Screen"],
+            plan: {
+                phase1: "Day 1-10: Design Principles, Typography & Vector Tools.",
+                phase2: "Day 11-20: Branding Systems & Psychology of Color.",
+                phase3: "Day 21-30: UI/UX Project & Portfolio Website."
+            }
+        },
+        "Music Production": {
+            img: "https://images.pexels.com/photos/164821/pexels-photo-164821.jpeg?auto=compress&cs=tinysrgb&w=800",
+            icon: "fa-music",
+            desc: "From Zero to Beat-Maker in 30 Days.",
+            gear: ["DAW (FL Studio/Ableton)", "MIDI Keyboard", "Audio Interface", "Studio Monitors"],
+            plan: {
+                phase1: "Day 1-10: Learning DAW & Music Theory for Producers.",
+                phase2: "Day 11-20: Sound Design & Arrangement.",
+                phase3: "Day 21-30: Professional Mixing, Mastering & Distribution."
+            }
+        },
+        "Painting": {
+            img: "https://images.pexels.com/photos/1148998/pexels-photo-1148998.jpeg?auto=compress&cs=tinysrgb&w=800",
+            icon: "fa-paintbrush",
+            desc: "Master Artistry & Gallery Prep in 30 Days.",
+            gear: ["Set of Brushes", "High-Quality Oil/Acrylic Paints", "Easel & Canvases", "Odorless Mineral Spirits"],
+            plan: {
+                phase1: "Day 1-10: Anatomy, Perspective & Underpainting.",
+                phase2: "Day 11-20: Color Harmony & Texture Techniques.",
+                phase3: "Day 21-30: Creating a 3-Piece Series for Exhibition."
+            }
+        },
+        "Storytelling": {
+            img: "https://images.pexels.com/photos/261579/pexels-photo-261579.jpeg?auto=compress&cs=tinysrgb&w=800",
+            icon: "fa-pen-fancy",
+            desc: "Finish your Script or Short Story in 30 Days.",
+            gear: ["Focus-oriented Writing App", "Outline Notebook", "Plot-Board"],
+            plan: {
+                phase1: "Day 1-10: Character Arcs & World Building.",
+                phase2: "Day 11-20: Writing the First Draft (Focus on Flow).",
+                phase3: "Day 21-30: Editing, Polishing & Pitching Strategy."
+            }
+        },
+        "Theatre & Acting": {
+            img: "https://images.pexels.com/photos/713149/pexels-photo-713149.jpeg?auto=compress&cs=tinysrgb&w=800",
+            icon: "fa-masks-theater",
+            desc: "Stage Presence & Professional Performance.",
+            gear: ["Yoga Mat (Body Work)", "Full Length Mirror", "Voice Recording Equipment"],
+            plan: {
+                phase1: "Day 1-10: Voice Projection & Emotional Memory.",
+                phase2: "Day 11-20: Improvisation & Script Analysis.",
+                phase3: "Day 21-30: Master a Monologue & Character Study."
+            }
+        }
+    };
+
+    function render() {
+        const grid = document.getElementById('mainGrid');
+        grid.innerHTML = Object.keys(branches).map(name => `
+            <div class="card">
+                <img src="${branches[name].img}" class="card-img">
+                <div class="card-body">
+                    <h3><i class="fa-solid ${branches[name].icon}" style="color:var(--accent2)"></i> ${name}</h3>
+                    <p style="color:var(--muted); font-size:0.9rem; margin:15px 0;">30-Day Professional Road Map</p>
+                    <button class="btn btn-primary" onclick="showDetails('${name}')">Start Mastery</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function showDetails(name) {
+        const data = branches[name];
+        document.getElementById('home-view').style.display = 'none';
+        document.getElementById('details-page').style.display = 'block';
+        window.scrollTo(0,0);
+        
+        document.getElementById('details-content').innerHTML = `
+            <div class="info-grid">
+                <div>
+                    <img src="${data.img}" style="width:100%; border-radius:30px; box-shadow:0 20px 40px rgba(0,0,0,0.5);">
+                    <h1 style="margin-top:25px; font-size:2.5rem;">${name}</h1>
+                    <p style="color:var(--accent2); font-weight:600; margin-bottom:20px;">Mastery Course - Day 1 to 30</p>
+                    
+                    <div class="section-box">
+                        <h4 style="margin-bottom:15px;"><i class="fa-solid fa-box-open"></i> Essential Gear</h4>
+                        <div style="display:grid; gap:10px;">
+                            ${data.gear.map(item => `
+                                <div class="gear-item"><i class="fa-solid fa-circle-check"></i> ${item}</div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3><i class="fa-solid fa-calendar-check"></i> 30-Day Training Schedule</h3>
+                    
+                    <div class="section-box" style="border-left: 5px solid #ff4b2b;">
+                        <h4>🔥 Phase 1: The Basics (Week 1)</h4>
+                        <p style="color:var(--muted);">${data.plan.phase1}</p>
+                        <div class="day-grid">
+                            ${Array.from({length: 10}, (_, i) => `<div class="day-box">Day ${i+1}</div>`).join('')}
+                        </div>
+                    </div>
+
+                    <div class="section-box" style="border-left: 5px solid #ff9068;">
+                        <h4>🛠️ Phase 2: Building Skills (Week 2-3)</h4>
+                        <p style="color:var(--muted);">${data.plan.phase2}</p>
+                        <div class="day-grid">
+                            ${Array.from({length: 10}, (_, i) => `<div class="day-box">Day ${i+11}</div>`).join('')}
+                        </div>
+                    </div>
+
+                    <div class="section-box" style="border-left: 5px solid var(--accent2);">
+                        <h4>🏆 Phase 3: Launching Pro (Week 4)</h4>
+                        <p style="color:var(--muted);">${data.plan.phase3}</p>
+                        <div class="day-grid">
+                            ${Array.from({length: 10}, (_, i) => `<div class="day-box" style="background:var(--accent2); color:black;">Day ${i+21}</div>`).join('')}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    function showHome() {
+        document.getElementById('home-view').style.display = 'block';
+        document.getElementById('details-page').style.display = 'none';
+    }
+    function askAI() {
+    const query = document.getElementById('aiQuery').value.toLowerCase();
+    const responseBox = document.getElementById('aiResponse');
+    let matchedBranch = null;
+
+    // Hedhi el logic mta3 el Keywords
+    const keywordsMap = {
+        "Video Editing": ["montage", "video", "film", "youtube", "edit", "cinema", "cut"],
+        "Graphic Design": ["design", "logo", "branding", "illustrator", "photoshop", "ui", "ux"],
+        "Music Production": ["music", "beat", "song", "ghne", "instrument", "studio", "mix"],
+        "Painting": ["paint", "color", "brush", "drawing", "art", "tableau", "peinture"],
+        "Storytelling": ["write", "story", "book", "script", "9assa", "novel"],
+        "Theatre & Acting": ["act", "theatre", "stage", "nmathel", "performance"]
+    };
+
+    // Nlaoujou 3la el match
+    for (let branch in keywordsMap) {
+        if (keywordsMap[branch].some(k => query.includes(k))) {
+            matchedBranch = branch;
+            break;
+        }
+    }
+
+    if (matchedBranch) {
+        responseBox.innerHTML = `🤖 AI: "Fhemtek! El path mta3 <strong>${matchedBranch}</strong> houwa elli yse3dek..."`;
+        responseBox.style.color = "var(--accent2)";
+        
+        // N-hazzouh direct lel page mta3 el details ba3d 1.5 seconds
+        setTimeout(() => {
+            showDetails(matchedBranch);
+        }, 1500);
+        
+    } else {
+        responseBox.innerHTML = "🤔 Hmm, jarréb ektéb kelmét o5rin kima 'montage' walla 'design'...";
+        responseBox.style.color = "#ff5c5c";
+    }
+}
+
+    render();
+</script>
+</body>
+</html>
